@@ -6,7 +6,8 @@ import math
 from threading import Thread
 from chessboard import display
 
-from socket_client import HOST, PORT1, PORT0, player
+from socket_client import HOST, PORT1, PORT0
+from player import KeyboardPlayer
 
 
 class Display:
@@ -38,7 +39,7 @@ class RelativisticClient(Thread):
         self.port = port
         self.client_socket = socket.socket()  # instantiate
         self.board_history = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0'] * 6
-        self.player = player
+        self.player = KeyboardPlayer()
         self.visible_board = chess.Board()
         if port == PORT0:
             self.player_color = 'Black'
