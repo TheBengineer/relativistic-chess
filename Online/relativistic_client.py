@@ -74,19 +74,29 @@ class RelativisticClient(Thread):
         return True
 
     def next_move(self):
-        return self.player.random_player(self.board_history[-1])
+        self.update_display()
+        current_board_fen = self.board_history[-1]
+        move = self.player.random_player(current_board_fen)
+        board = chess.Board(current_board_fen)
+        board.push_uci(move.uci())
+        self.board_history.append(board.fen())
+        self.calculate_relativistic_board()
+        self.update_display()
+        return move
 
     def send_move(self, uci):
         self.client_socket.send(str(uci).encode())
 
     def calculate_relativistic_board(self):
-        self.visible_board = chess.Board(self.board_history[-1])
+        b = chess.Board(self.board_history[-1])
         if self.player_color == 'White':
-            self.visible_board.apply_transform(chess.flip_vertical)
+            b.apply_transform(chess.flip_vertical)
+            b.apply_transform(chess.flip_horizontal)
+        self.visible_board = b
         self.updated = True
 
     def update_display(self):
-        print(self.visible_board)
+        print(self.visible_board.transform(chess.flip_vertical).transform(chess.flip_horizontal))
         fen = self.visible_board.fen()
         print(fen)
         display.update(fen, self.display_window)
