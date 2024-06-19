@@ -1,6 +1,7 @@
 import socket
 import chess
 import time
+import math
 
 from threading import Thread
 from chessboard import display
@@ -36,7 +37,7 @@ class RelativisticClient(Thread):
         self.host = host
         self.port = port
         self.client_socket = socket.socket()  # instantiate
-        self.board_history = []
+        self.board_history = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0'] * 6
         self.player = player
         self.visible_board = chess.Board()
         if port == PORT0:
@@ -79,7 +80,7 @@ class RelativisticClient(Thread):
         move = self.player.random_player(current_board_fen)
         board = chess.Board(current_board_fen)
         board.push_uci(move.uci())
-        self.board_history.append(board.fen())
+        self.board_history[-1] = board.fen()
         self.calculate_relativistic_board()
         self.update_display()
         return move
@@ -88,11 +89,28 @@ class RelativisticClient(Thread):
         self.client_socket.send(str(uci).encode())
 
     def calculate_relativistic_board(self):
-        b = chess.Board(self.board_history[-1])
+        current_board = chess.Board(self.board_history[-1])
+        color = self.player_color == 'White'
+        king_pos = current_board.king(color)
+        for layer, next_board_fen in enumerate(reversed(self.board_history[-5:])):
+            next_board = chess.Board(next_board_fen)
+            distance = (layer + 1) * 2
+            for i, square in enumerate(chess.SQUARES):
+                # square_distance = math.sqrt(pow(chess.square_rank(square) - chess.square_rank(king_pos), 2) + pow(
+                #     chess.square_file(square) - chess.square_file(king_pos), 2))
+                if chess.square_distance(king_pos, square) >= distance:
+                    new_piece = next_board.piece_at(square)
+                    old_piece = current_board.piece_at(square)
+                    if new_piece != old_piece:
+                        if not (new_piece and new_piece.color == color):
+                            current_board.set_piece_at(square, new_piece)
+        self.transform_board_for_display(current_board)
+
+    def transform_board_for_display(self, board):
         if self.player_color == 'White':
-            b.apply_transform(chess.flip_vertical)
-            b.apply_transform(chess.flip_horizontal)
-        self.visible_board = b
+            board.apply_transform(chess.flip_vertical)
+            board.apply_transform(chess.flip_horizontal)
+        self.visible_board = board
         self.updated = True
 
     def update_display(self):
