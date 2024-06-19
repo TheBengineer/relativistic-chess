@@ -171,10 +171,10 @@ def server():
     # init game
     game_handler = chessGame()
 
-    # await keyboard signal to start game
-    while True:
-        inp = input('Press enter to start game...')
-        break
+    # # await keyboard signal to start game
+    # while True:
+    #     inp = input('Press enter to start game...')
+    #     break
 
     game_handler.startGame()
     result = []

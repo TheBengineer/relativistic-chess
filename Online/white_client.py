@@ -7,7 +7,7 @@ if __name__ == '__main__':
     rc.connect()
     rc.time_buffering()
     rc.start()
-    input('Press any key to exit...')
-    rc.go = False
+    # input('Press any key to exit...')
+    # rc.go = False
     rc.join()
     print('Main Good bye!')

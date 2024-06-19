@@ -8,6 +8,19 @@ from chessboard import display
 from socket_client import HOST, PORT1, PORT0, player
 
 
+class Display(Thread):
+
+    def __init__(self):
+        super().__init__()
+        self.display_window = display.start(caption='Relativistic Chess')
+        self.go = True
+
+    def run(self):
+        while self.go:
+            display.check_for_quit()
+        display.terminate()
+
+
 class RelativisticClient(Thread):
     def __init__(self, host, port):
         super().__init__()
@@ -34,12 +47,17 @@ class RelativisticClient(Thread):
         print('Calculating time buffering complete')
 
     def get_next_board_state(self):
-        board_fen = self.client_socket.recv(8192).decode()
+        try:
+            self.client_socket.settimeout(.1)
+            board_fen = self.client_socket.recv(8192).decode()
+            self.client_socket.settimeout(None)
+        except socket.timeout:
+            return False
         print(f'Got fen {board_fen} from server')
         if not board_fen:
-            return
+            return False
         self.board_history.append(board_fen)
-        return board_fen
+        return True
 
     def next_move(self):
         return self.player.random_player(self.board_history[-1])
@@ -48,25 +66,33 @@ class RelativisticClient(Thread):
         self.client_socket.send(str(uci).encode())
 
     def calculate_relativistic_board(self):
-        pass
+        self.visible_board = chess.Board(self.board_history[-1])
 
     def update_display(self):
         print(self.visible_board)
-        valid_fen = self.visible_board.fen()
-        print(valid_fen)
-        display.update(valid_fen, self.display_window)
+        fen = self.visible_board.fen()
+        print(fen)
+        display.update(fen, self.display_window)
+        if not self.display_window.flipped:
+            display.flip(self.display_window)
+
+    def stop(self):
+        self.go = False
+        display.terminate()
 
     def run(self):
         # main process
         while self.go:
             display.check_for_quit()
             try:
+                updated = self.get_next_board_state()
+                if not updated:
+                    continue
                 t0 = time.time()
-                self.get_next_board_state()
                 if self.board_history[-1] == 'Quit':
+                    self.stop()
                     break
                 self.calculate_relativistic_board()
-                self.update_display()
                 move_uci = self.next_move()
                 print(f'Sending move {move_uci} to server, time taken: {str(time.time() - t0)} ms')
                 self.send_move(move_uci)
@@ -74,6 +100,7 @@ class RelativisticClient(Thread):
                 print(f'Got unexpected error: {e}\nclosing connection...')
                 self.client_socket.close()
                 break
+            self.update_display()
 
         self.client_socket.close()  # close the connection
         display.terminate()

@@ -24,6 +24,7 @@ class DemoPlayer:
     def random_player(self, board_fen):
         self.board.set_fen(board_fen)
         move = random.choice(list(self.board.legal_moves))
+        input(f'Press any key to play move: {move}')
         return move
 
 
