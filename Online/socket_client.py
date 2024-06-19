@@ -28,6 +28,8 @@ class DemoPlayer:
         return move
 
 
+
+
 # init chess player
 player = DemoPlayer()
 
