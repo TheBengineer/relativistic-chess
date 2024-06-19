@@ -30,8 +30,10 @@ Note that this method **requires** your ISP allowing Port Forwarding service for
 ```
 pip install chess
 pip install chess-board
-```
+```00000000000000000
+0112
 
+12......................
 ## Usage
 
 ### Online

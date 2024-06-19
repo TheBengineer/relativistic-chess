@@ -1,8 +1,8 @@
 import socket, random, chess, time
 
 # server connection properties
-HOST = 'localhost'              # ask the host for their public IP
-PORT1 = 5555           # socket server port number (must matched server's ports)
+HOST = 'localhost'  # ask the host for their public IP
+PORT1 = 5555  # socket server port number (must matched server's ports)
 PORT0 = 5556
 
 #############################
@@ -16,16 +16,20 @@ Require:    a function that receives a FEN str (represents current chess.Board)
             -> return (an uci move)
 """
 
+
 class DemoPlayer:
     def __init__(self) -> None:
         self.board = chess.Board()
+
     def random_player(self, board_fen):
         self.board.set_fen(board_fen)
         move = random.choice(list(self.board.legal_moves))
         return move
 
+
 # init chess player
 player = DemoPlayer()
+
 
 ##############################
 
@@ -64,10 +68,11 @@ def client_program(host=HOST, port=PORT1):
             print('Got unexpected error, closing connection...')
             client_socket.close()
             break
-    
+
     client_socket.close()  # close the connection
     print('Good bye!')
 
+
 if __name__ == '__main__':
-    client_program(HOST, PORT1)         # use this function if you are white player
+    client_program(HOST, PORT1)  # use this function if you are white player
     # client_program(HOST, PORT0)         # use this function if you are black player
