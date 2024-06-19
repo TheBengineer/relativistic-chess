@@ -1,9 +1,9 @@
 import socket
 import chess
-import random
 import time
 
 from threading import Thread
+from chessboard import display
 
 from socket_client import HOST, PORT1, PORT0, player
 
@@ -16,7 +16,9 @@ class RelativisticClient(Thread):
         self.client_socket = socket.socket()  # instantiate
         self.board_history = []
         self.player = player
-        self.display_board = chess.Board()
+        self.player_color = 'White' if port == PORT1 else 'Black'
+        self.display_window = display.start(caption=f'Relativistic Chess - {self.player_color}')
+        self.visible_board = chess.Board()
         self.go = True
 
     def connect(self):
@@ -46,14 +48,18 @@ class RelativisticClient(Thread):
         self.client_socket.send(str(uci).encode())
 
     def calculate_relativistic_board(self):
-        self.display_board = chess.Board(self.board_history[-1])
+        pass
 
     def update_display(self):
-        print(self.display_board)
+        print(self.visible_board)
+        valid_fen = self.visible_board.fen()
+        print(valid_fen)
+        display.update(valid_fen, self.display_window)
 
     def run(self):
         # main process
         while self.go:
+            display.check_for_quit()
             try:
                 t0 = time.time()
                 self.get_next_board_state()
@@ -70,6 +76,7 @@ class RelativisticClient(Thread):
                 break
 
         self.client_socket.close()  # close the connection
+        display.terminate()
         print('Good bye!')
 
 

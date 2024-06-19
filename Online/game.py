@@ -8,7 +8,7 @@ def to_uci(uci=''):
 class chessGame:
     def __init__(self) -> None:
         self.board = chess.Board()
-        self.game_board = display.start()
+        self.game_board = display.start(caption="Server View")
         self.max_move = 100
         self.Playing = False
         self.turn = True    # true: white, false: black

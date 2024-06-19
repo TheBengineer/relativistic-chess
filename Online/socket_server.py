@@ -180,7 +180,7 @@ def server():
     result = []
 
     while GAME_STATE:
-        # accquire board fen
+        # acquire board fen
         BOARD_FEN_MUTEX.acquire()
         BOARD_FEN = [game_handler.getFen(), CURRENT_ID, 'Await']
         # release board fen mutex
