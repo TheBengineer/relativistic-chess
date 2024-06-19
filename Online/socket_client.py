@@ -1,7 +1,7 @@
 import socket, random, chess, time
 
 # server connection properties
-HOST = ''              # ask the host for their public IP
+HOST = 'localhost'              # ask the host for their public IP
 PORT1 = 5555           # socket server port number (must matched server's ports)
 PORT0 = 5556
 
