@@ -8,16 +8,25 @@ from chessboard import display
 from socket_client import HOST, PORT1, PORT0, player
 
 
-class Display(Thread):
+class Display:
 
-    def __init__(self):
+    def __init__(self, client, player_name='White'):
         super().__init__()
-        self.display_window = display.start(caption='Relativistic Chess')
+        self.client = client
+        self.player_name = player_name
+        self.display_window = display.start(caption=f'{self.player_name} - Relativistic Chess')
+        self.visible_board = chess.Board()
         self.go = True
 
-    def run(self):
+    def main(self):
         while self.go:
             display.check_for_quit()
+            if self.client.updated:
+                self.client.updated = False
+                self.visible_board = self.client.visible_board.copy()
+            display.update(self.visible_board.fen(), self.display_window)
+            if not self.display_window.flipped:
+                display.flip(self.display_window)
         display.terminate()
 
 
@@ -29,9 +38,14 @@ class RelativisticClient(Thread):
         self.client_socket = socket.socket()  # instantiate
         self.board_history = []
         self.player = player
-        self.player_color = 'White' if port == PORT1 else 'Black'
-        self.display_window = display.start(caption=f'Relativistic Chess - {self.player_color}')
         self.visible_board = chess.Board()
+        if port == PORT0:
+            self.player_color = 'Black'
+        else:
+            self.player_color = 'White'
+            self.visible_board = self.visible_board.mirror()
+        self.display_window = display.start(caption=f'Relativistic Chess - {self.player_color}')
+        self.updated = True
         self.go = True
 
     def connect(self):
@@ -67,6 +81,9 @@ class RelativisticClient(Thread):
 
     def calculate_relativistic_board(self):
         self.visible_board = chess.Board(self.board_history[-1])
+        if self.player_color == 'White':
+            self.visible_board.apply_transform(chess.flip_vertical)
+        self.updated = True
 
     def update_display(self):
         print(self.visible_board)
@@ -108,6 +125,14 @@ class RelativisticClient(Thread):
 
 
 if __name__ == '__main__':
+    rc = RelativisticClient(host=HOST, port=PORT1)
+    b = Display(rc)
+    b.main()
+    input('Press any key to exit...')
+    b.go = False
+    print('Main Good bye!')
+
+if __name__ == '__main__2':
     rc0 = RelativisticClient(host=HOST, port=PORT0)
     rc1 = RelativisticClient(host=HOST, port=PORT1)
     rc0.connect()
