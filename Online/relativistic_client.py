@@ -78,13 +78,13 @@ class RelativisticClient(Thread):
     def next_move(self):
         self.update_display()
         current_board_fen = self.board_history[-1]
-        move = self.player.random_player(current_board_fen)
+        move_str = self.player.keyboard_player(current_board_fen)
         board = chess.Board(current_board_fen)
-        board.push_uci(move.uci())
+        board.push_uci(move_str)
         self.board_history[-1] = board.fen()
         self.calculate_relativistic_board()
         self.update_display()
-        return move
+        return move_str
 
     def send_move(self, uci):
         self.client_socket.send(str(uci).encode())
