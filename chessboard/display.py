@@ -10,7 +10,6 @@ from pygame.locals import QUIT, KEYUP, K_ESCAPE
 from chessboard.board import Board, Color
 from chessboard.constants import FPS, STARTING_FEN, WINDOW_CAPTION, WINDOW_WIDTH, WINDOW_HEIGHT
 
-
 os.environ['SDL_VIDEO_CENTERED'] = '1'  # Centre display window.
 
 fps_clock = pygame.time.Clock()
@@ -44,9 +43,14 @@ def start(fen=STARTING_FEN, bg_color=Color.ASH, caption=WINDOW_CAPTION):
     return game_board
 
 
+def draw_timewarp(game_board: Board):
+    game_board.draw_circle((300, 300))
+
+
 def update(fen, game_board):
     check_for_quit()
     game_board.update_pieces(fen)
+    draw_timewarp(game_board)
 
     pygame.display.update()
     fps_clock.tick(FPS)
