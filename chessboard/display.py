@@ -49,7 +49,7 @@ def draw_timewarp(game_board: Board, player_color):
     king_square = board.king(player_color)
     king_pos = (chess.square_file(king_square), chess.square_rank(king_square))
     game_pos = game_board.board_rect[king_pos[1]][king_pos[0]]
-    game_pos = (game_pos[0] - 26, game_pos[1] + 24)
+    game_pos = (game_pos[0] + 24, game_pos[1] + 24)
     game_board.draw_timewarp(game_pos)
 
 
