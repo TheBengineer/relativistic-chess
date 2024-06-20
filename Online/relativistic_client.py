@@ -38,7 +38,7 @@ class RelativisticClient(Thread):
         self.host = host
         self.port = port
         self.client_socket = socket.socket()  # instantiate
-        self.board_history = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 0'] * 6
+        self.board_history = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0'] * 6
         self.player = KeyboardPlayer()
         self.visible_board = chess.Board(self.board_history[-1])
         if port == PORT0:
