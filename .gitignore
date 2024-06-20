@@ -1,2 +1,5 @@
 .idea/
 *.pyc
+/Online/dist/
+/Online/build/
+*.spec
