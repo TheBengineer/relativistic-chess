@@ -103,7 +103,7 @@ class RelativisticClient(Thread):
                     new_piece = next_board.piece_at(square)
                     old_piece = current_board.piece_at(square)
                     if new_piece != old_piece:
-                        if not (new_piece and new_piece.color == color):
+                        if not (old_piece and old_piece.color == color):
                             current_board.set_piece_at(square, new_piece)
         self.transform_board_for_display(current_board)
 
