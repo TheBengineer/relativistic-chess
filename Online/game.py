@@ -18,8 +18,6 @@ class chessGame:
 
     def startGame(self):
         self.Playing = True
-        # init gameboard
-        display.start(self.board.fen(), caption="Server View2")
 
     def displayGame(self):
         display.update(self.board.fen(), self.game_board, self.turn)
