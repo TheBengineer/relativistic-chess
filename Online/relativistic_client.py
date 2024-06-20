@@ -46,6 +46,8 @@ class RelativisticClient(Thread):
             self.player_color = 'Black'
         else:
             self.player_color = 'White'
+            self.visible_board.apply_transform(chess.flip_vertical)
+            self.visible_board.apply_transform(chess.flip_horizontal)
         self.display_window = display.start(caption=f'Relativistic Chess - {self.player_color}')
         self.updated = True
         self.go = True
@@ -108,9 +110,10 @@ class RelativisticClient(Thread):
         self.transform_board_for_display(current_board)
 
     def transform_board_for_display(self, board):
-        if self.player_color == 'Black':
-            self.visible_board.apply_transform(chess.flip_vertical)
-            self.visible_board.apply_transform(chess.flip_horizontal)
+        if self.player_color == 'White':
+            board.apply_transform(chess.flip_vertical)
+            board.apply_transform(chess.flip_horizontal)
+        self.visible_board = board
         self.updated = True
 
     def update_display(self):
