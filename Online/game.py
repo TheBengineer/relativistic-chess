@@ -22,7 +22,7 @@ class chessGame:
         display.start(self.board.fen(), caption="Server View2")
 
     def displayGame(self):
-        display.update(self.board.fen(), self.game_board)
+        display.update(self.board.fen(), self.game_board, self.turn)
 
     def shutdown(self):
         display.terminate()

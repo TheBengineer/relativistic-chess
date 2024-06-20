@@ -26,7 +26,7 @@ class Display:
             if self.client.updated:
                 self.client.updated = False
                 self.visible_board = self.client.visible_board.copy()
-            display.update(self.visible_board.fen(), self.display_window)
+            display.update(self.visible_board.fen(), self.display_window, self.player_name == 'White')
             if not self.display_window.flipped:
                 display.flip(self.display_window)
         display.terminate()
@@ -38,7 +38,8 @@ class RelativisticClient(Thread):
         self.host = host
         self.port = port
         self.client_socket = socket.socket()  # instantiate
-        self.board_history = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0'] * 6
+        # self.board_history = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0'] * 6
+        self.board_history = ['rnb1kbnr/pppqpppp/8/3p4/3P4/8/PPPQPPPP/RNB1KBNR w KQkq - 2 3'] * 6
         self.player = KeyboardPlayer()
         self.visible_board = chess.Board(self.board_history[-1])
         if port == PORT0:
@@ -118,7 +119,7 @@ class RelativisticClient(Thread):
         print(self.visible_board.transform(chess.flip_vertical).transform(chess.flip_horizontal))
         fen = self.visible_board.fen()
         print(fen)
-        display.update(fen, self.display_window)
+        display.update(fen, self.display_window, self.player_color == 'White')
         if not self.display_window.flipped:
             display.flip(self.display_window)
 

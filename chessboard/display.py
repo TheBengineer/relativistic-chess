@@ -37,25 +37,26 @@ def start(fen=STARTING_FEN, bg_color=Color.ASH, caption=WINDOW_CAPTION):
 
     display_surf.fill(bg_color)
     game_board = Board(bg_color, display_surf)
+    color = chess.Board(fen).turn
 
-    update(fen, game_board)
+    update(fen, game_board, color)
 
     return game_board
 
 
-def draw_timewarp(game_board: Board):
+def draw_timewarp(game_board: Board, player_color):
     board = chess.Board(game_board.current_fen)
-    king_square = board.king(not board.turn)
+    king_square = board.king(player_color)
     king_pos = (chess.square_file(king_square), chess.square_rank(king_square))
     game_pos = game_board.board_rect[king_pos[1]][king_pos[0]]
     game_pos = (game_pos[0] - 26, game_pos[1] + 24)
     game_board.draw_timewarp(game_pos)
 
 
-def update(fen, game_board):
+def update(fen, game_board, color: bool):
     check_for_quit()
     game_board.update_pieces(fen)
-    draw_timewarp(game_board)
+    draw_timewarp(game_board, color)
 
     pygame.display.update()
     fps_clock.tick(FPS)
