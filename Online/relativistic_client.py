@@ -39,14 +39,15 @@ class RelativisticClient(Thread):
         self.port = port
         self.client_socket = socket.socket()  # instantiate
         # self.board_history = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0'] * 6
-        self.board_history = ['rnb1kbnr/pppqpppp/8/3p4/3P4/8/PPPQPPPP/RNB1KBNR w KQkq - 2 3'] * 6
+        self.board_history = ['rnbqkbnr/ppp1pppp/8/8/8/7K/PPP1PPPP/RNBQ1BNR w KQkq - 2 3'] * 6
         self.player = KeyboardPlayer()
         self.visible_board = chess.Board(self.board_history[-1])
         if port == PORT0:
             self.player_color = 'Black'
         else:
             self.player_color = 'White'
-            self.visible_board = self.visible_board.mirror()
+            self.visible_board.apply_transform(chess.flip_vertical)
+            self.visible_board.apply_transform(chess.flip_horizontal)
         self.display_window = display.start(caption=f'Relativistic Chess - {self.player_color}')
         self.updated = True
         self.go = True
