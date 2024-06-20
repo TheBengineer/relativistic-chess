@@ -152,10 +152,10 @@ class Board:
             alpha = 200 - (5 - i) * 40
             color = (0, 0, 100, alpha)
             if i > 0:
-                pygame.draw.rect(overlay_surface, color, (left + 1, top + 1, right - left,  top2-top-1))
-                pygame.draw.rect(overlay_surface, color, (left + 1, top2 + 1, left2 - left-1,  bottom2-top2))
-                pygame.draw.rect(overlay_surface, color, (right2 + 2, top2 + 1, right - right2,  bottom2-top2))
-                pygame.draw.rect(overlay_surface, color, (left + 1, bottom2 + 2, right - left, bottom-bottom2-2))
+                pygame.draw.rect(overlay_surface, color, (left + 1, top + 1, right - left, top2 - top - 1))
+                pygame.draw.rect(overlay_surface, color, (left + 1, top2 + 1, left2 - left - 1, bottom2 - top2 + 1))
+                pygame.draw.rect(overlay_surface, color, (right2 + 2, top2 + 1, right - right2, bottom2 - top2 + 1))
+                pygame.draw.rect(overlay_surface, color, (left + 1, bottom2 + 2, right - left, bottom - bottom2 - 2))
             if top > min_board:
                 pygame.draw.line(overlay_surface, Color.BLUE, top_left, top_right, 2)
             if bottom < max_board - 1:
