@@ -1,7 +1,7 @@
 import os
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'  # Hide pygame support message
-
+import chess
 import sys
 import pygame
 
@@ -44,7 +44,12 @@ def start(fen=STARTING_FEN, bg_color=Color.ASH, caption=WINDOW_CAPTION):
 
 
 def draw_timewarp(game_board: Board):
-    game_board.draw_circle((300, 300))
+    board = chess.Board(game_board.current_fen)
+    king_square = board.king(not board.turn)
+    king_pos = (chess.square_file(king_square), chess.square_rank(king_square))
+    game_pos = game_board.board_rect[king_pos[1]][king_pos[0]]
+    game_pos = (game_pos[0] - 26, game_pos[1] + 24)
+    game_board.draw_timewarp(game_pos)
 
 
 def update(fen, game_board):

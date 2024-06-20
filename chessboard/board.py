@@ -9,21 +9,21 @@ from chessboard.utils import is_odd
 
 class Board:
     a8, a7, a6, a5, a4, a3, a2, a1 = (100, 100), (100, 150), (100, 200), (100, 250), (100, 300), (100, 350), (
-    100, 400), (100, 450)
+        100, 400), (100, 450)
     b8, b7, b6, b5, b4, b3, b2, b1 = (150, 100), (150, 150), (150, 200), (150, 250), (150, 300), (150, 350), (
-    150, 400), (150, 450)
+        150, 400), (150, 450)
     c8, c7, c6, c5, c4, c3, c2, c1 = (200, 100), (200, 150), (200, 200), (200, 250), (200, 300), (200, 350), (
-    200, 400), (200, 450)
+        200, 400), (200, 450)
     d8, d7, d6, d5, d4, d3, d2, d1 = (250, 100), (250, 150), (250, 200), (250, 250), (250, 300), (250, 350), (
-    250, 400), (250, 450)
+        250, 400), (250, 450)
     e8, e7, e6, e5, e4, e3, e2, e1 = (300, 100), (300, 150), (300, 200), (300, 250), (300, 300), (300, 350), (
-    300, 400), (300, 450)
+        300, 400), (300, 450)
     f8, f7, f6, f5, f4, f3, f2, f1 = (350, 100), (350, 150), (350, 200), (350, 250), (350, 300), (350, 350), (
-    350, 400), (350, 450)
+        350, 400), (350, 450)
     g8, g7, g6, g5, g4, g3, g2, g1 = (400, 100), (400, 150), (400, 200), (400, 250), (400, 300), (400, 350), (
-    400, 400), (400, 450)
+        400, 400), (400, 450)
     h8, h7, h6, h5, h4, h3, h2, h1 = (450, 100), (450, 150), (450, 200), (450, 250), (450, 300), (450, 350), (
-    450, 400), (450, 450)
+        450, 400), (450, 450)
 
     board_rect = (
         (a8, b8, c8, d8, e8, f8, g8, h8),
@@ -129,11 +129,47 @@ class Board:
         for piece in self.piece_rect:
             piece.display_piece()
 
-    def draw_circle(self, position):
-        pygame.draw.circle(self.display_surf, Color.BLACK, position, 10)
+    def draw_timewarp(self, position):
+        overlay_surface = pygame.Surface((500, 500), pygame.SRCALPHA)
+        max_board = 500
+        min_board = 99
+
+        for i in range(5):
+            distance = (i + 1) * 100 + 25
+            distance2 = i * 100 + 25
+            left = max(position[0] - distance, min_board)
+            right = min(position[0] + distance, max_board)
+            top = max(position[1] - distance, min_board)
+            bottom = min(position[1] + distance, max_board)
+            left2 = max(position[0] - distance2, min_board)
+            right2 = min(position[0] + distance2, max_board)
+            top2 = max(position[1] - distance2, min_board)
+            bottom2 = min(position[1] + distance2, max_board)
+            top_left = (left, top)
+            top_right = (right, top)
+            bottom_left = (left, bottom)
+            bottom_right = (right, bottom)
+            alpha = 200 - (5 - i) * 40
+            color = (0, 0, 100, alpha)
+            if i > 0:
+                pygame.draw.rect(overlay_surface, color, (left + 1, top + 1, right - left,  top-top2-1))
+                pygame.draw.rect(overlay_surface, color, (left + 1, top2 + 1, left2 - left-1,  bottom2-top2))
+                pygame.draw.rect(overlay_surface, color, (right2 + 2, top2 + 1, right - right2,  bottom2-top2))
+                pygame.draw.rect(overlay_surface, color, (left + 1, bottom2 + 2, right - left, bottom-bottom2-2))
+            if top > min_board:
+                pygame.draw.line(overlay_surface, Color.BLUE, top_left, top_right, 2)
+            if bottom < max_board - 1:
+                pygame.draw.line(overlay_surface, Color.BLUE, bottom_left, bottom_right, 2)
+            if left > min_board:
+                pygame.draw.line(overlay_surface, Color.BLUE, top_left, bottom_left, 2)
+            if right < max_board - 1:
+                pygame.draw.line(overlay_surface, Color.BLUE, top_right, bottom_right, 2)
+        self.display_surf.blit(overlay_surface, (0, 0))
 
 
 class Color:
     WHITE = (255, 255, 255)
     ASH = (50, 50, 50)
     BLACK = (0, 0, 0)
+    BLUE = (0, 0, 100, 255)
+    BLUET = (0, 0, 100, 50)
