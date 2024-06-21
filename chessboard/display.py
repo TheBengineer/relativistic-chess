@@ -47,13 +47,14 @@ def start(fen=STARTING_FEN, bg_color=Color.ASH, caption=WINDOW_CAPTION):
 def draw_timewarp(game_board: Board, player_color):
     board = chess.Board(game_board.current_fen)
     king_square = board.king(player_color)
-    king_pos = (7-chess.square_file(king_square), chess.square_rank(king_square))
+    king_pos = (chess.square_file(king_square), chess.square_rank(king_square))
     game_pos = game_board.board_rect[king_pos[1]][king_pos[0]]
     game_pos = (game_pos[0] + 24, game_pos[1] + 24)
     game_board.draw_timewarp(game_pos)
 
 
 def update(fen, game_board, color: bool):
+    color = not color
     check_for_quit()
     game_board.update_pieces(fen)
     draw_timewarp(game_board, color)

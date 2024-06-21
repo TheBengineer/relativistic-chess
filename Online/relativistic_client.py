@@ -27,8 +27,6 @@ class Display:
                 self.client.updated = False
                 self.visible_board = self.client.visible_board.copy()
             display.update(self.visible_board.fen(), self.display_window, self.player_name == 'White')
-            if not self.display_window.flipped:
-                display.flip(self.display_window)
         display.terminate()
 
 
@@ -46,8 +44,8 @@ class RelativisticClient(Thread):
             self.player_color = 'Black'
         else:
             self.player_color = 'White'
-            self.visible_board.apply_transform(chess.flip_vertical)
-            self.visible_board.apply_transform(chess.flip_horizontal)
+            # self.visible_board.apply_transform(chess.flip_vertical)
+            # self.visible_board.apply_transform(chess.flip_horizontal)
         self.display_window = display.start(caption=f'Relativistic Chess - {self.player_color}')
         self.updated = True
         self.go = True
@@ -110,9 +108,9 @@ class RelativisticClient(Thread):
         self.transform_board_for_display(current_board)
 
     def transform_board_for_display(self, board):
-        if self.player_color == 'White':
-            board.apply_transform(chess.flip_vertical)
-            board.apply_transform(chess.flip_horizontal)
+        # if self.player_color == 'White':
+        #     board.apply_transform(chess.flip_vertical)
+        #     board.apply_transform(chess.flip_horizontal)
         self.visible_board = board
         self.updated = True
 
@@ -121,8 +119,6 @@ class RelativisticClient(Thread):
         fen = self.visible_board.fen()
         print(fen)
         display.update(fen, self.display_window, self.player_color == 'White')
-        if not self.display_window.flipped:
-            display.flip(self.display_window)
 
     def stop(self):
         self.go = False
