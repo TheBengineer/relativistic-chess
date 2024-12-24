@@ -26,7 +26,7 @@ class Display:
             if self.client.updated:
                 self.client.updated = False
                 self.visible_board = self.client.visible_board.copy()
-            display.update(self.visible_board.fen(), self.display_window, self.player_name == 'White')
+            display.update(self.visible_board.fen(), self.display_window)
         display.terminate()
 
 
@@ -118,7 +118,7 @@ class RelativisticClient(Thread):
         print(self.visible_board)
         fen = self.visible_board.fen()
         print(fen)
-        display.update(fen, self.display_window, self.player_color == 'White')
+        display.update(fen, self.display_window)
 
     def stop(self):
         self.go = False

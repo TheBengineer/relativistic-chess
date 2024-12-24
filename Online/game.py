@@ -20,7 +20,7 @@ class chessGame:
         self.Playing = True
 
     def displayGame(self):
-        display.update(self.board.fen(), self.game_board, self.turn)
+        display.update(self.board.fen(), self.game_board)
 
     def shutdown(self):
         display.terminate()
